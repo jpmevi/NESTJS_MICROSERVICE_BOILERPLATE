@@ -40,23 +40,30 @@ $ npm run start:prod
 ```
 
 ## Running the app with a docker container
-$ docker run --env-file .env -e TYPEORM_HOST='mysql' --network mynetwork -p {extport}:{port} ecommerce-admin-test
-
+```bash
+# Build the container
+$ docker build -t myapp-name -f docker/Dockerfile 
+# Run the container locally
+$ docker run --env-file .env -e TYPEORM_HOST='mysql' --network mynetwork -p {extport}:{port} myapp-name
+```
 As for the {port} use the same as described in the .env file, if this var is not set the default port is 3000.
 We are passing TYPEORM_HOST='mysql' to override the .env file TYPEORM_HOST which is usually set to localhost.
 The mysql service is called 'mysql' in the docker-compose.yml file. As for the {extport} you can use any one you
 want that is not used
 For example
-$ docker run --env-file .env -e TYPEORM_HOST='mysql' --network mynetwork -p 3000:3000 ecommerce-admin-test
-or
-$ docker run --env-file .env -e TYPEORM_HOST='mysql' --network mynetwork -p 4000:3000 ecommerce-admin-test
+```bash
+$ docker run --env-file .env -e TYPEORM_HOST='mysql' --network mynetwork -p 3000:3000 myapp-name
+# or
+$ docker run --env-file .env -e TYPEORM_HOST='mysql' --network mynetwork -p 4000:3000 myapp-name
+```
 
 ## Deploy to development server
 To deploy to development first push your branch to the repo, do not push to main or develop
+```bash
 $ git add .
 $ git commit -m "type: message"
 $ git push 
-After that check the latest release with git tag
+# After that check the latest release with git tag
 $ git tag
 releases/0.0.1
 releases/0.0.10
@@ -69,14 +76,16 @@ releases/0.0.2
 releases/0.0.3
 releases/0.0.4
 releases/0.0.5
-
-Or you could use describe to get the latest tag
+# Or you could use describe to get the latest tag
 $ git describe --tag
 releases/0.0.15
+```
 So the next release probably is going to be 0.0.16
+```bash
 $ git tag releases/0.0.16
-And push your tag
+# Push your tag
 $ git push origin --tags
+```
 
 And this will try to deploy the latest changes in the develop environment in AWS ECS
 
