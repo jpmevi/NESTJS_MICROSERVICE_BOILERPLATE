@@ -1,0 +1,89 @@
+name: Deploy to Amazon ECS in Dev environment
+
+on:
+  create:
+    tags: 
+     - releases/[1-9]+.[0-9]+.[0-9]+
+  push:
+    tags: 
+     - releases/[1-9]+.[0-9]+.[0-9]+
+
+jobs:
+  install_and_release:
+    name: Install and deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout 2x
+      uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    - name: NPM install
+      run: |
+        npm install
+        npm run build
+    - name: NPM Test
+      run: |
+        npm test
+    - name: Run E2E Testing
+      run: |
+        # npm run test:e2e
+    - name: Run coverage
+      run: |
+        npm run test:cov
+    - name: Get current tag
+      id: vars
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPO_NAME }}
+        IMAGE_TAG: ${{ github.sha }}
+        RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+      run: |
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        export RELEASE_VERSION_NUMBER=$(echo $RELEASE_VERSION | awk '{ print substr( $0, 10, length($0)) }')-release
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f docker/Dockerfile .
+        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:develop
+        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$RELEASE_VERSION_NUMBER
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:develop
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$RELEASE_VERSION_NUMBER
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+    - name: Configure AWS credentials for Develop
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+        aws-region: ${{ secrets.AWS_REGION_DEV }}
+
+    - name: Download task definition
+      run: |
+        aws ecs describe-task-definition --task-definition ${{secrets.AWS_ECS_CONTAINER_NAME}} --query taskDefinition > ecs-task-definition.json
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ecs-task-definition.json
+        container-name: ${{ secrets.AWS_ECS_CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ secrets.AWS_ECS_SERVICE_NAME_DEV }}
+        cluster: ${{ secrets.AWS_ECS_CLUSTER_NAME_DEV }}
+        wait-for-service-stability: true
