@@ -58,7 +58,7 @@ $ docker run --env-file .env -e TYPEORM_HOST='mysql' --network mynetwork -p 4000
 ```
 
 ## Deploy to development server
-To deploy to development first push your branch to the repo, do not push to main or develop
+To deploy to development first push your branch to your branch repo
 ```bash
 $ git add .
 $ git commit -m "type: message"
@@ -87,7 +87,7 @@ $ git tag releases/0.0.16
 $ git push origin --tags
 ```
 
-And this will try to deploy the latest changes in the develop environment in AWS ECS
+And this will try to deploy the latest changes in the development environment in AWS ECS
 
 ## Test
 
