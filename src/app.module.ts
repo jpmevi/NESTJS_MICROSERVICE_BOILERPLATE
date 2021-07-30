@@ -15,6 +15,7 @@ import { HealthService } from './app/services/health/health.service';
 import { DatabaseModule } from './config/database/database.module';
 import ExampleRepository from './app/respositories/Example.repository';
 import { typeOrmConfig } from './config/config.validation';
+import { ExampleTransformer } from './app/transformers/Example.tranformer';
 
 @Module({
   imports: [
@@ -31,8 +32,9 @@ import { typeOrmConfig } from './config/config.validation';
   providers: [
     ExampleService,
     ExampleRepository,
-    HealthService,
     ExampleProvider,
+    ExampleTransformer,
+    HealthService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
