@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ExampleProvider } from 'src/app/providers/example/example.provider';
-import ExampleRepository from 'src/app/respositories/Example.repository';
-import { ExampleService } from 'src/app/services/example/Example.service';
-import { ExampleTransformer } from 'src/app/transformers/Example.tranformer';
+import { ExampleProvider } from '../../providers/example/example.provider';
+import ExampleRepository from '../../respositories/Example.repository';
+import { ExampleService } from '../../services/example/Example.service';
+import { ExampleTransformer } from '../../transformers/Example.tranformer';
 import { ExampleController } from './Example.controller';
 
 describe('ExamplesController', () => {
