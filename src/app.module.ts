@@ -3,49 +3,36 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HttpModule } from '@nestjs/common';
 import * as Joi from 'joi';
 
-import { CountriesController } from './app/controllers/country.controller';
-import { CountriesService } from './app/services/country.service';
-import { Country } from './app/entities/country.entity';
-import { HealthController } from './app/controllers/health.controller';
-import { HealthService } from './app/services/health.service';
+import { ExampleController } from './app/controllers/example/Example.controller';
+import { ExampleService } from './app/services/example/Example.service';
+import { ExampleProvider } from './app/providers/example/example.provider';
+import { Example } from './app/entities/Example.entity';
+import { HealthController } from './app/controllers/health/Health.controller';
+import { HealthService } from './app/services/health/health.service';
 import { DatabaseModule } from './config/database/database.module';
-import { enviroments } from './config/environments';
-import config from './config/config';
+import ExampleRepository from './app/respositories/Example.repository';
+import { typeOrmConfig } from './config/config.validation';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: enviroments[process.env.NODE_ENV] || '.env',
-      load: [config],
-      isGlobal: true,
-      validationSchema: Joi.object({
-        TYPEORM_CONNECTION: Joi.string().required(),
-        TYPEORM_HOST: Joi.string().required(),
-        TYPEORM_PORT: Joi.number().required(),
-        TYPEORM_DATABASE: Joi.string().required(),
-        TYPEORM_USERNAME: Joi.string().required(),
-        TYPEORM_PASSWORD: Joi.string().required(),
-        TYPEORM_SYNCHRONIZE: Joi.boolean().required(),
-        TYPEORM_LOGGING: Joi.boolean().required(),
-        TYPEORM_ENTITIES: Joi.string().required(),
-        TYPEORM_MIGRATIONS: Joi.string().required(),
-        TYPEORM_MIGRATIONS_DIR: Joi.string().required(),
-        TYPEORM_MIGRATIONS_TABLE_NAME: Joi.string().required(),
-      }),
-    }),
+    ConfigModule.forRoot(typeOrmConfig),
     DatabaseModule,
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 20000,
     }),
-    TypeOrmModule.forFeature([Country]),
+    TypeOrmModule.forFeature([Example]),
+    HttpModule,
   ],
-  controllers: [CountriesController, HealthController],
+  controllers: [ExampleController, HealthController],
   providers: [
-    CountriesService,
+    ExampleService,
+    ExampleRepository,
     HealthService,
+    ExampleProvider,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
