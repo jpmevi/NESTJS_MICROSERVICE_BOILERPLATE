@@ -14,8 +14,8 @@ import {
   CreateExampleDto,
   FilterExampleDto,
   UpdateExampleDto,
-} from 'src/app/dtos/example.dto';
-import { ExampleService } from 'src/app/services/example/Example.service';
+} from '../../dtos/example.dto';
+import { ExampleService } from '../../services/example/Example.service';
 
 @ApiTags('example')
 @Controller('v1/example')
