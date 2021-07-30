@@ -54,8 +54,8 @@ export class ExampleService {
    * @returns {Promise<ResponseType>}
    */
   async create(data: CreateExampleDto): Promise<ResponseType> {
-    const newCountry = this.exampleRepository.create(data);
-    const exampleCreated = await this.exampleRepository.save(newCountry);
+    const newExample = this.exampleRepository.create(data);
+    const exampleCreated = await this.exampleRepository.save(newExample);
     return this.exampleTransformer.exampleTransformer(exampleCreated);
   }
 
@@ -66,9 +66,9 @@ export class ExampleService {
    * @returns {Promise<ResponseType>}
    */
   async update(id: number, data: UpdateExampleDto): Promise<ResponseType> {
-    const country = await this.exampleRepository.findOne(id);
-    this.exampleRepository.merge(country, data);
-    const response = await this.exampleRepository.save(country);
+    const example = await this.exampleRepository.findOne(id);
+    this.exampleRepository.merge(example, data);
+    const response = await this.exampleRepository.save(example);
     return this.exampleTransformer.exampleTransformer(response);
   }
 
