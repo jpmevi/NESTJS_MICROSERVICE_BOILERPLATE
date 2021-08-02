@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-@Entity({ name: 'countries' })
+@Entity({ name: 'example' })
 export class Example {
   @PrimaryGeneratedColumn()
   id: number;
