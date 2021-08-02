@@ -4,8 +4,6 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/common';
-import * as Joi from 'joi';
-
 import { ExampleController } from './app/controllers/example/Example.controller';
 import { ExampleService } from './app/services/example/Example.service';
 import { ExampleProvider } from './app/providers/example/example.provider';
@@ -16,6 +14,7 @@ import { DatabaseModule } from './config/database/database.module';
 import ExampleRepository from './app/respositories/Example.repository';
 import { typeOrmConfig } from './config/config.validation';
 import { ExampleTransformer } from './app/transformers/Example.tranformer';
+import AWSProvider from './app/providers/aws/Aws.provider';
 
 @Module({
   imports: [
@@ -35,6 +34,7 @@ import { ExampleTransformer } from './app/transformers/Example.tranformer';
     ExampleProvider,
     ExampleTransformer,
     HealthService,
+    AWSProvider,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

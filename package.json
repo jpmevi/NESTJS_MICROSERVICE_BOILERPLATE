@@ -36,6 +36,7 @@
     "@nestjs/swagger": "^4.8.0",
     "@nestjs/throttler": "^1.1.4",
     "@nestjs/typeorm": "^7.1.5",
+    "aws-sdk": "^2.957.0",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "joi": "^17.4.0",
@@ -43,6 +44,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6",
+    "sqs-consumer": "^5.5.0",
     "swagger-ui-express": "^4.1.6",
     "typeorm": "^0.2.34"
   },

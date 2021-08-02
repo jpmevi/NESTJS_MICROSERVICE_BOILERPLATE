@@ -2,6 +2,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ExampleListener } from './app/listeners/Example.listener';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,6 +25,11 @@ async function bootstrap() {
 
   // Security
   app.enableCors();
+
+  // Listeners
+  // This can be deleted to run without create a SQS in AWS
+  const sqsExampleConsumer = app.get(ExampleListener);
+  await sqsExampleConsumer.consumer();
 
   // Documentation
   const config = new DocumentBuilder()
