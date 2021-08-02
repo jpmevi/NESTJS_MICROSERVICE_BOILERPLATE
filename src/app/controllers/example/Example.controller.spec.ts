@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExampleProvider } from '../../providers/example/example.provider';
 import ExampleRepository from '../../respositories/Example.repository';
@@ -16,6 +17,7 @@ describe('ExamplesController', () => {
         ExampleRepository,
         ExampleProvider,
         ExampleTransformer,
+        HttpService,
       ],
     }).compile();
 
