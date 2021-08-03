@@ -1,4 +1,8 @@
+import { HttpModule } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ExampleProvider } from '../../providers/example/example.provider';
+import ExampleRepository from '../../respositories/Example.repository';
+import { ExampleTransformer } from '../../transformers/Example.tranformer';
 import { ExampleService } from './Example.service';
 
 describe('exampleService', () => {
@@ -6,7 +10,13 @@ describe('exampleService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ExampleService],
+      providers: [
+        ExampleService,
+        ExampleRepository,
+        ExampleProvider,
+        ExampleTransformer,
+      ],
+      imports: [HttpModule],
     }).compile();
 
     service = module.get<ExampleService>(ExampleService);

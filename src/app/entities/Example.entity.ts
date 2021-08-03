@@ -22,6 +22,9 @@ export class Example {
   @Column({ type: 'varchar', length: 10, unique: true })
   code: string;
 
+  @Column({ type: 'timestamp', nullable: true })
+  activation_at: Date | null;
+
   @Exclude()
   @CreateDateColumn({
     name: 'create_at',

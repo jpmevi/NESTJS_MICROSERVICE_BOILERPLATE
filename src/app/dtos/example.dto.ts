@@ -6,6 +6,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
+import { ActivationDate } from '../validators/example.validator';
 
 export class CreateExampleDto {
   @IsString()
@@ -22,6 +23,11 @@ export class CreateExampleDto {
   @IsNotEmpty()
   @ApiProperty()
   readonly code: string;
+
+  @IsString()
+  @ActivationDate('status')
+  //Custom validation
+  readonly activation_at: Date;
 }
 
 export class UpdateExampleDto extends PartialType(CreateExampleDto) {}

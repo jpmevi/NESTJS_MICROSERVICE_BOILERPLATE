@@ -1,4 +1,4 @@
-import { HttpService } from '@nestjs/common';
+import { HttpModule } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExampleProvider } from '../../providers/example/example.provider';
 import ExampleRepository from '../../respositories/Example.repository';
@@ -17,8 +17,8 @@ describe('ExamplesController', () => {
         ExampleRepository,
         ExampleProvider,
         ExampleTransformer,
-        HttpService,
       ],
+      imports: [HttpModule],
     }).compile();
 
     controller = module.get<ExampleController>(ExampleController);
