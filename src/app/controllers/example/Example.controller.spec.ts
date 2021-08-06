@@ -1,12 +1,12 @@
 import { HttpModule } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExampleProvider } from '../../providers/example/example.provider';
-import ExampleRepository from '../../respositories/Example.repository';
+import ExampleRepository from '../../repositories/Example.repository';
 import { ExampleService } from '../../services/example/Example.service';
 import { ExampleTransformer } from '../../transformers/Example.tranformer';
 import { ExampleController } from './Example.controller';
 
-describe('ExamplesController', () => {
+describe('ExampleController', () => {
   let controller: ExampleController;
 
   beforeEach(async () => {
@@ -26,5 +26,32 @@ describe('ExamplesController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('FindAll function', () => {
+    const result = {
+      status: 200,
+      data: [
+        {
+          id: 1,
+          name: 'Example Name',
+          status: 'ACTIVE',
+          code: 'EX001',
+          activationAt: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+        },
+      ],
+      message: 'This is a test',
+    };
+    it('should return an array of examples', async () => {
+      jest.spyOn(controller, 'findAll').mockImplementation(async () => result);
+      expect(await controller.findAll({ limit: 1, offset: 20 })).toBe(result);
+    });
+    it('Without send parameters', async () => {
+      jest.spyOn(controller, 'findAll').mockImplementation(async () => result);
+      expect(await controller.findAll({})).toBe(result);
+    });
   });
 });

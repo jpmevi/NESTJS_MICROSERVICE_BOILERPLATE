@@ -9,7 +9,7 @@ export default registerAs('config', () => {
       database: process.env.TYPEORM_DATABASE,
       username: process.env.TYPEORM_USERNAME,
       password: process.env.TYPEORM_PASSWORD,
-      synchronize: process.env.TYPEORM_SYNCHRONIZE,
+      synchronize: !!process.env.TYPEORM_SYNCHRONIZE,
       logging: process.env.TYPEORM_LOGGING,
       entities: process.env.TYPEORM_ENTITIES,
       migrations: process.env.TYPEORM_MIGRATIONS,

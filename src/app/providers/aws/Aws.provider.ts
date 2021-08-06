@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import AWS, { SNS, SQS } from 'aws-sdk';
+import * as AWS from 'aws-sdk';
 import { Consumer } from 'sqs-consumer';
 
 @Injectable()
 export default class AWSProvider {
   private static instance: AWSProvider;
-  private sqs: SQS.Types;
-  private sns: SNS.Types;
+  private sqs: AWS.SQS.Types;
+  private sns: AWS.SNS.Types;
 
   constructor(private configService: ConfigService) {
     AWS.config.update({
@@ -70,19 +70,22 @@ export default class AWSProvider {
    * @param {string} topicArn
    */
   public publisTopic = async (subject: string, data: any, topicArn: string) => {
-    const params: SNS.PublishInput = {
+    const params: AWS.SNS.PublishInput = {
       Message: JSON.stringify(data),
       TopicArn: topicArn,
       Subject: subject,
     };
-    this.sns.publish(params, (err: AWS.AWSError, data: SNS.PublishResponse) => {
-      if (err) {
-        // In case of error
-        console.log(`Error sending message to ${topicArn}`);
-      } else {
-        // In case of success
-        console.log(`Message sent: ${data.MessageId}`);
-      }
-    });
+    this.sns.publish(
+      params,
+      (err: AWS.AWSError, data: AWS.SNS.PublishResponse) => {
+        if (err) {
+          // In case of error
+          console.log(`Error sending message to ${topicArn}`);
+        } else {
+          // In case of success
+          console.log(`Message sent: ${data.MessageId}`);
+        }
+      },
+    );
   };
 }

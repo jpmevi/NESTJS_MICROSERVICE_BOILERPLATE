@@ -11,7 +11,7 @@ import { Example } from './app/entities/Example.entity';
 import { HealthController } from './app/controllers/health/Health.controller';
 import { HealthService } from './app/services/health/health.service';
 import { DatabaseModule } from './config/database/database.module';
-import ExampleRepository from './app/respositories/Example.repository';
+import ExampleRepository from './app/repositories/Example.repository';
 import { typeOrmConfig } from './config/config.validation';
 import { ExampleTransformer } from './app/transformers/Example.tranformer';
 import AWSProvider from './app/providers/aws/Aws.provider';
@@ -24,13 +24,12 @@ import AWSProvider from './app/providers/aws/Aws.provider';
       ttl: 60,
       limit: 20000,
     }),
-    TypeOrmModule.forFeature([Example]),
+    TypeOrmModule.forFeature([Example, ExampleRepository]),
     HttpModule,
   ],
   controllers: [ExampleController, HealthController],
   providers: [
     ExampleService,
-    ExampleRepository,
     ExampleProvider,
     ExampleTransformer,
     HealthService,
@@ -40,5 +39,6 @@ import AWSProvider from './app/providers/aws/Aws.provider';
       useClass: ThrottlerGuard,
     },
   ],
+  exports: [TypeOrmModule],
 })
 export class AppModule {}

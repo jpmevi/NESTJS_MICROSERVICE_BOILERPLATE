@@ -1,7 +1,7 @@
 import { HttpModule } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExampleProvider } from '../../providers/example/example.provider';
-import ExampleRepository from '../../respositories/Example.repository';
+import ExampleRepository from '../../repositories/Example.repository';
 import { ExampleTransformer } from '../../transformers/Example.tranformer';
 import { ExampleService } from './Example.service';
 

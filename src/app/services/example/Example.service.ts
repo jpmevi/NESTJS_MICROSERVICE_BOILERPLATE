@@ -6,7 +6,7 @@ import {
   FilterExampleDto,
   UpdateExampleDto,
 } from '../../dtos/example.dto';
-import ExampleRepository from '../../respositories/Example.repository';
+import ExampleRepository from '../../repositories/Example.repository';
 import { ResponseType } from './example.types';
 
 @Injectable()
@@ -23,7 +23,8 @@ export class ExampleService {
    * @returns {Promise<ResponseType>}
    */
   async findAll(params?: FilterExampleDto): Promise<ResponseType> {
-    if (params) {
+    if (params.limit && params.offset) {
+      console.log('In if');
       const { limit, offset } = params;
       const examplesFiltered = await this.exampleRepository.find({
         take: limit,

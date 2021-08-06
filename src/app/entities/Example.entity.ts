@@ -23,13 +23,13 @@ export class Example {
   code: string;
 
   @Column({ type: 'timestamp', nullable: true })
-  activation_at: Date | null;
+  activationAt: Date | null;
 
   @Exclude()
   @CreateDateColumn({
     name: 'create_at',
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   createdAt: Date;
 
@@ -37,7 +37,7 @@ export class Example {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   updatedAt: Date;
 
@@ -45,7 +45,7 @@ export class Example {
   @DeleteDateColumn({
     name: 'deleted_at',
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: true,
   })
-  deletedAt: Date;
+  deletedAt: Date | null;
 }

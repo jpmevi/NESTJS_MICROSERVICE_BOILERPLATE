@@ -36,10 +36,10 @@ export class FilterExampleDto {
   @IsOptional()
   @IsPositive()
   @ApiProperty()
-  limit: number;
+  limit?: number;
 
   @IsOptional()
   @Min(0)
   @ApiProperty()
-  offset: number;
+  offset?: number;
 }
