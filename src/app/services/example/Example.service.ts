@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { UpdateResult } from 'typeorm';
 import { ExampleProvider } from '../../providers/example/example.provider';
 import { ExampleTransformer } from '../../transformers/Example.tranformer';
 import {
@@ -7,7 +8,8 @@ import {
   UpdateExampleDto,
 } from '../../dtos/example.dto';
 import ExampleRepository from '../../repositories/Example.repository';
-import { ResponseType } from './example.types';
+import { Example } from '../../entities/Example.entity';
+import { ExampleStatus } from './example.types';
 
 @Injectable()
 export class ExampleService {
@@ -20,67 +22,78 @@ export class ExampleService {
   /**
    * Return all data from Example table optionally with filters
    * @param {FilterExampleDto} params
-   * @returns {Promise<ResponseType>}
+   * @returns {Promise<Example[]>}
    */
-  async findAll(params?: FilterExampleDto): Promise<ResponseType> {
+  async findAll(params?: FilterExampleDto): Promise<Example[]> {
     if (params.limit && params.offset) {
-      console.log('In if');
       const { limit, offset } = params;
-      const examplesFiltered = await this.exampleRepository.find({
+      return await this.exampleRepository.find({
         take: limit,
         skip: offset,
       });
-      return this.exampleTransformer.exampleTransformer(examplesFiltered);
     }
-    const examples = await this.exampleRepository.find();
-    return this.exampleTransformer.exampleTransformer(examples);
+    return await this.exampleRepository.find();
   }
 
   /**
+   * Return all example names and status from Example table optionally with filters
+   * @param {FilterExampleDto} params
+   * @returns {Promise<ExampleStatus[]>}
+   */
+  async findAllStatus(params?: FilterExampleDto): Promise<ExampleStatus[]> {
+    if (params.limit && params.offset) {
+      const { limit, offset } = params;
+      const examples = await this.exampleRepository.find({
+        take: limit,
+        skip: offset,
+      });
+      return this.exampleTransformer.exampleStatus(examples);
+    }
+    const examples = await this.exampleRepository.find();
+    return this.exampleTransformer.exampleStatus(examples);
+  }
+  /**
    * Return a Example data found by id
    * @param {number} id
-   * @returns {Promise<ResponseType>}
+   * @returns {Promise<Example>}
    */
-  async findOne(id: number): Promise<ResponseType> {
+  async findOne(id: number): Promise<Example> {
     const example = await this.exampleRepository.findOne(id);
     if (!example) {
       throw new NotFoundException(`Example ${id} not found`);
     }
-    return this.exampleTransformer.exampleTransformer(example);
+    return example;
   }
 
   /**
    * Create a register in Example table
    * @param {CreateExampleDto} data
-   * @returns {Promise<ResponseType>}
+   * @returns {Promise<Example>}
    */
-  async create(data: CreateExampleDto): Promise<ResponseType> {
+  async create(data: CreateExampleDto): Promise<Example> {
     const newExample = this.exampleRepository.create(data);
-    const exampleCreated = await this.exampleRepository.save(newExample);
-    return this.exampleTransformer.exampleTransformer(exampleCreated);
+    return await this.exampleRepository.save(newExample);
   }
 
   /**
    * Update a register with data passed by parameter and it found by id
    * @param {number} id
    * @param {UpdateExampleDto} data
-   * @returns {Promise<ResponseType>}
+   * @returns {Promise<Example>}
    */
-  async update(id: number, data: UpdateExampleDto): Promise<ResponseType> {
+  async update(id: number, data: UpdateExampleDto): Promise<Example> {
     const example = await this.exampleRepository.findOne(id);
     this.exampleRepository.merge(example, data);
-    const response = await this.exampleRepository.save(example);
-    return this.exampleTransformer.exampleTransformer(response);
+    return await this.exampleRepository.save(example);
   }
 
   /**
    * Set delete_at field from Example register found by id
    * @param {number} id
-   * @returns {Promise<ResponseType>}
+   * @returns {Promise<UpdateResult>}
    */
-  async remove(id: number): Promise<ResponseType> {
-    const response = await this.exampleRepository.softDelete(id);
-    return this.exampleTransformer.exampleTransformer(response);
+  async remove(id: number): Promise<UpdateResult> {
+    return await this.exampleRepository.softDelete(id);
   }
 
   /**
@@ -88,8 +101,7 @@ export class ExampleService {
    * @param {number} id
    * @returns {Promise<any>}
    */
-  async getMovieExample(id: number) {
-    const movie = await this.exampleProvider.getMoviesById(id);
-    return this.exampleTransformer.exampleTransformer(movie);
+  async getMovieExample(id: number): Promise<any> {
+    return await this.exampleProvider.getMoviesById(id);
   }
 }

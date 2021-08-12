@@ -18,7 +18,7 @@ export default class AWSProvider {
     this.sqs = new AWS.SQS();
     this.sns = new AWS.SNS();
 
-    /* Validate that there is only one instance */
+    // Validate that there is only one instance
     if (typeof AWSProvider.instance === 'object') {
       return AWSProvider.instance;
     }
@@ -28,13 +28,13 @@ export default class AWSProvider {
   /**
    * Read a AWS Queue and run the callback function by sqs-consumer
    * @param {string} queue
-   * @param {any} callback
+   * @param {(message: AWS.SQS.Message) => Promise<void>} callback
    * @returns {Promise<Consumer>}
    */
   public readQueues = async (
     queue: string,
-    callback: any /* TODO: set type */,
-  ) => {
+    callback: (message: AWS.SQS.Message) => Promise<void>,
+  ): Promise<Consumer> => {
     console.log(`Ready to Read ${queue}`);
     const app = Consumer.create({
       queueUrl: queue,

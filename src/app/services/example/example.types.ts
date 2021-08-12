@@ -6,3 +6,9 @@ export interface ResponseType {
   data: UpdateResult | Example | Example[];
   message: string | null;
 }
+
+export interface ExampleStatus {
+  id: number;
+  name: string;
+  status: string;
+}

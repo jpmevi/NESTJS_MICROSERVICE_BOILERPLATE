@@ -12,13 +12,20 @@ import { HealthController } from './app/controllers/health/Health.controller';
 import { HealthService } from './app/services/health/health.service';
 import { DatabaseModule } from './config/database/database.module';
 import ExampleRepository from './app/repositories/Example.repository';
-import { typeOrmConfig } from './config/config.validation';
 import { ExampleTransformer } from './app/transformers/Example.tranformer';
 import AWSProvider from './app/providers/aws/Aws.provider';
+import { enviroments } from './config/environments';
+import config from './config/config';
+import schemaValidation from './config/schema.validation';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(typeOrmConfig),
+    ConfigModule.forRoot({
+      envFilePath: enviroments[process.env.NODE_ENV] || '.env',
+      load: [config],
+      isGlobal: true,
+      validationSchema: schemaValidation,
+    }),
     DatabaseModule,
     ThrottlerModule.forRoot({
       ttl: 60,

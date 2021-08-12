@@ -11,7 +11,7 @@ export class ExampleListener {
 
   public consumer = async () => {
     const queue = this.configService.get('aws.exampleSqsUrl');
-    this.awsProvider.readQueues(queue, () => {
+    this.awsProvider.readQueues(queue, async () => {
       console.log('Message read....');
     });
   };

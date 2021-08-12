@@ -25,7 +25,10 @@ export class ExampleController {
   findAll(@Query() query: FilterExampleDto) {
     return this.exampleService.findAll(query);
   }
-
+  @Get('status')
+  findAllStatus(@Query() query: FilterExampleDto) {
+    return this.exampleService.findAllStatus(query);
+  }
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.exampleService.findOne(id);

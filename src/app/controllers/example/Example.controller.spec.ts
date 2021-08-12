@@ -29,22 +29,18 @@ describe('ExampleController', () => {
   });
 
   describe('FindAll function', () => {
-    const result = {
-      status: 200,
-      data: [
-        {
-          id: 1,
-          name: 'Example Name',
-          status: 'ACTIVE',
-          code: 'EX001',
-          activationAt: new Date(),
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
-        },
-      ],
-      message: 'This is a test',
-    };
+    const result = [
+      {
+        id: 1,
+        name: 'Example Name',
+        status: 'ACTIVE',
+        code: 'EX001',
+        activationAt: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      },
+    ];
     it('should return an array of examples', async () => {
       jest.spyOn(controller, 'findAll').mockImplementation(async () => result);
       expect(await controller.findAll({ limit: 1, offset: 20 })).toBe(result);

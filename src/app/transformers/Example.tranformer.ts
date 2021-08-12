@@ -1,17 +1,17 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { UpdateResult } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 import { Example } from '../entities/Example.entity';
 
 @Injectable()
 export class ExampleTransformer {
-  public exampleTransformer(
-    data: UpdateResult | [] | Example | Example[],
-    message: string | null = null,
-  ) {
-    return {
-      status: HttpStatus.OK,
-      data,
-      message,
-    };
+  public exampleStatus(examples: Example[]) {
+    const exampleMapped = examples.map((example) => {
+      const { id, name, status } = example;
+      return {
+        id,
+        name,
+        status,
+      };
+    });
+    return exampleMapped;
   }
 }
