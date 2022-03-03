@@ -17,6 +17,7 @@ import AWSProvider from './app/providers/aws/Aws.provider';
 import { enviroments } from './config/environments';
 import config from './config/config';
 import schemaValidation from './config/schema.validation';
+import { ExampleListener } from './app/listeners/Example.listener';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import schemaValidation from './config/schema.validation';
     ExampleTransformer,
     HealthService,
     AWSProvider,
+    ExampleListener,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
