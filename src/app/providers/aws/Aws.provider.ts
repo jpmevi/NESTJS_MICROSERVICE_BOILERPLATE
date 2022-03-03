@@ -69,7 +69,11 @@ export default class AWSProvider {
    * @param {any} data
    * @param {string} topicArn
    */
-  public publisTopic = async (subject: string, data: any, topicArn: string) => {
+  public publishTopic = async (
+    subject: string,
+    data: any,
+    topicArn: string,
+  ) => {
     const params: AWS.SNS.PublishInput = {
       Message: JSON.stringify(data),
       TopicArn: topicArn,
